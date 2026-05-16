@@ -96,55 +96,44 @@ GDRIVE_FOLDER_ID = "1QJVa0RN6E_lDaBqWrOaBfzFGJoE2mwf6"
 # ─────────────────────────────────────────────────────────────
 @st.cache_resource
 def download_and_load_models():
-
     os.makedirs(MODEL_DIR, exist_ok=True)
 
-    config_path = os.path.join(MODEL_DIR, "config_deploy.pkl")
-
-    # Download hanya sekali
-    if not os.path.exists(config_path):
-
-        with st.spinner("⏬ Mendownload model dari Google Drive..."):
-
+    # Download model jika belum ada
+    if not os.path.exists(os.path.join(MODEL_DIR, "config_deploy.pkl")):
+        with st.spinner("⏬ Mendownload model dari Google Drive (hanya sekali)..."):
             try:
                 url = f"https://drive.google.com/drive/folders/{GDRIVE_FOLDER_ID}"
-
                 gdown.download_folder(
-                    url=url,
+                    url,
                     output=MODEL_DIR,
                     quiet=False,
                     use_cookies=False
                 )
-
             except Exception as e:
                 return None, f"Gagal download model: {e}"
 
-    # Cari folder sebenarnya
+    # Cari folder model sebenarnya
     actual_dir = MODEL_DIR
 
     for item in os.listdir(MODEL_DIR):
-        path_item = os.path.join(MODEL_DIR, item)
+        item_path = os.path.join(MODEL_DIR, item)
 
-        if os.path.isdir(path_item):
+        if os.path.isdir(item_path):
             if os.path.exists(
-                os.path.join(path_item, "config_deploy.pkl")
+                os.path.join(item_path, "config_deploy.pkl")
             ):
-                actual_dir = path_item
+                actual_dir = item_path
                 break
 
     try:
-
-        model_path = os.path.join(
-            actual_dir,
-            "encoder_xray.keras"
-        )
-
-        # FIX KERAS VERSION ISSUE
+        # ===== LOAD MODEL KERAS =====
         encoder = tf.keras.models.load_model(
-            model_path,
-            compile=False
+            os.path.join(actual_dir, "encoder_xray.keras"),
+            compile=False,
+            safe_mode=False
         )
 
+        # ===== LOAD PKL =====
         latent_scaler = joblib.load(
             os.path.join(actual_dir, "latent_scaler.pkl")
         )
@@ -196,7 +185,6 @@ def download_and_load_models():
 
     except Exception as e:
         return None, f"Gagal load model: {str(e)}"
-
 
 # ─────────────────────────────────────────────────────────────
 # TEXT PROCESSING
