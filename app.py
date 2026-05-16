@@ -661,7 +661,7 @@ if st.button("🔍 Analisis Cluster"):
             "Interpretasi belum tersedia"
         )
 
-      # ==================================================
+  # ==================================================
         # OUTPUT — hanya bagian ini yang diubah
         # ==================================================
         feature_items = ""
@@ -684,23 +684,17 @@ if st.button("🔍 Analisis Cluster"):
 
         st.markdown(f"""
         <div style="background:linear-gradient(135deg,#1a1f2e,#141824);border:1px solid #2a3044;border-left:4px solid #00d4ff;border-radius:12px;padding:1.5rem 2rem;margin-top:1.5rem;">
-
             <p style="color:#00d4ff;font-size:0.9rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:1rem;">Hasil Analisis</p>
-
             <div style="display:inline-block;background:#00d4ff22;color:#00d4ff;border:1px solid #00d4ff55;border-radius:8px;padding:0.3rem 0.9rem;font-size:1.5rem;font-weight:700;margin-bottom:0.8rem;">
                 Cluster {cluster_pred}
             </div>
-
             <p style="color:#e2e8f0;font-size:1.05rem;font-weight:500;margin:0.4rem 0 1rem 0;">{interpretasi}</p>
-
             <p style="color:#64748b;font-size:0.78rem;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.4rem;">Kategori Report Terdeteksi</p>
             <p style="color:#e2e8f0;font-size:1rem;margin-bottom:1rem;">{category_text}</p>
-
             <p style="color:#64748b;font-size:0.78rem;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.4rem;">Fitur Klinis</p>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-bottom:1rem;">
                 {feature_items}
             </div>
-
             <div style="display:flex;justify-content:space-between;border-top:1px solid #2a3044;padding-top:1rem;flex-wrap:wrap;gap:0.5rem;">
                 <div>
                     <div style="font-size:0.7rem;color:#64748b;text-transform:uppercase;letter-spacing:1px;">Silhouette Score</div>
@@ -719,14 +713,15 @@ if st.button("🔍 Analisis Cluster"):
                     <div style="color:#e2e8f0;font-family:monospace;font-size:0.85rem;">{best_config['dimensi_vector']}</div>
                 </div>
             </div>
-
         </div>
         """, unsafe_allow_html=True)
-        except Exception as e:
+
+    except Exception as e:
         st.markdown(
             f'<div style="background:#2d1b1b;border:1px solid #ff4444;border-radius:8px;padding:1rem;color:#ff8080;">❌ Error saat prediksi: {e}</div>',
             unsafe_allow_html=True
         )
+
 # ─────────────────────────────────────────────────────────────
 # FOOTER
 # ─────────────────────────────────────────────────────────────
