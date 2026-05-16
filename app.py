@@ -6,8 +6,8 @@ import re
 import os
 import gdown
 from PIL import Image
-import tf_keras as tf
-from tf_keras import layers, models
+import tensorflow as tf
+from tensorflow.keras import layers, models
 
 # ─── Konfigurasi Halaman ───────────────────────────────────────────────────────
 st.set_page_config(
