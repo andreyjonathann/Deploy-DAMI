@@ -6,3 +6,4 @@ gdown==5.2.0
 Pillow==10.3.0
 scikit-learn==1.4.2
 tensorflow-cpu==2.15.0
+keras==2.15.0
