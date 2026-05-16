@@ -1,8 +1,8 @@
 streamlit
 numpy
 pandas
-pillow
-scikit-learn
 joblib
 gdown
-tf-keras
+pillow
+tensorflow-cpu
+scikit-learn
