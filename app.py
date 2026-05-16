@@ -127,7 +127,8 @@ def download_and_load_models():
 
     try:
         # ===== LOAD MODEL KERAS =====
-        encoder = tf.keras.models.load_model(
+        from tensorflow.keras.models import load_model 
+        encoder = load_model(
             os.path.join(actual_dir, "model_encoder.h5"),
             compile=False
         )
