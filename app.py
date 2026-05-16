@@ -423,9 +423,10 @@ if st.button("🔍 Analisis Cluster"):
 
     try:
 
-        img = Image.open(
-            uploaded_file
-        ).convert("L")
+        # ==================================================
+        # PREPROCESS IMAGE
+        # ==================================================
+        img = Image.open(uploaded_file).convert("L")
 
         img = img.resize(
             (IMG_SIZE, IMG_SIZE)
@@ -435,22 +436,173 @@ if st.button("🔍 Analisis Cluster"):
             "float32"
         ) / 255.0
 
-        arr = np.expand_dims(arr, axis=-1)
-        arr = np.expand_dims(arr, axis=0)
+        arr = np.expand_dims(
+            arr,
+            axis=-1
+        )
 
+        arr = np.expand_dims(
+            arr,
+            axis=0
+        )
+
+        # ==================================================
+        # IMAGE FEATURE
+        # ==================================================
         latent = encoder.predict(
             arr,
             verbose=0
         )
 
-        latent_pca = pca_img.transform(
-            latent_scaler.transform(latent)
+        latent_scaled = latent_scaler.transform(
+            latent
         )
 
-        st.success("✅ Prediksi berhasil")
+        latent_pca = pca_img.transform(
+            latent_scaled
+        )
 
-        st.write("Dimensi latent:")
-        st.write(latent_pca.shape)
+        # ==================================================
+        # CLINICAL FEATURE
+        # ==================================================
+        feat_series = extract_report_features(
+            report_text
+        )
+
+        clinical_new = feat_series[
+            CLINICAL_COLS
+        ].astype(float).values.reshape(1, -1)
+
+        clinical_scaled = clinical_scaler.transform(
+            clinical_new
+        )
+
+        # ==================================================
+        # CATEGORY
+        # ==================================================
+        category_text = "Normal"
+
+        if feat_series["fitur_bronchopneumonia"] == 1:
+            category_text = "Bronchopneumonia"
+
+        elif feat_series["fitur_fibrotic"] == 1:
+            category_text = "Fibrotic Pneumonia"
+
+        elif feat_series["fitur_pneumonia"] == 1:
+            category_text = "Pneumonia"
+
+        category_onehot = onehot.transform(
+            pd.DataFrame({
+                "kategori_report": [category_text]
+            })
+        )
+
+        # ==================================================
+        # TFIDF FEATURE
+        # ==================================================
+        clean_report = clean_text(
+            report_text
+        )
+
+        tfidf_new = tfidf.transform(
+            [clean_report]
+        )
+
+        tfidf_svd = svd_text.transform(
+            tfidf_new
+        )
+
+        tfidf_scaled = tfidf_scaler.transform(
+            tfidf_svd
+        )
+
+        # ==================================================
+        # GABUNG FITUR
+        # ==================================================
+        best_config = config["best_config"]
+
+        iw = best_config["image_weight"]
+        cw = best_config["clinical_weight"]
+        catw = best_config["category_weight"]
+        tw = best_config["tfidf_weight"]
+
+        final_vector = np.hstack([
+
+            latent_pca * iw,
+
+            clinical_scaled * cw,
+
+            category_onehot * catw,
+
+            tfidf_scaled * tw
+
+        ])
+
+        # ==================================================
+        # PREDIKSI CLUSTER
+        # ==================================================
+        cluster_pred = int(
+            kmeans.predict(final_vector)[0]
+        )
+
+        cluster_interpretation = config[
+            "cluster_interpretation"
+        ]
+
+        interpretasi = cluster_interpretation.get(
+            cluster_pred,
+            "Interpretasi belum tersedia"
+        )
+
+        # ==================================================
+        # OUTPUT
+        # ==================================================
+        st.markdown(f"""
+        <div class="result-card">
+            <h3>🫁 Hasil Analisis</h3>
+
+            <div class="cluster-badge">
+                Cluster {cluster_pred}
+            </div>
+
+            <br><br>
+
+            <b>Kategori Report:</b>
+            {category_text}
+
+            <br><br>
+
+            <b>Interpretasi Penyakit:</b><br>
+            {interpretasi}
+
+            <br><br>
+
+            <b>Fitur Terdeteksi:</b><br>
+            Pneumonia:
+            {"✅" if feat_series["fitur_pneumonia"] else "❌"}
+
+            <br>
+
+            Bronchopneumonia:
+            {"✅" if feat_series["fitur_bronchopneumonia"] else "❌"}
+
+            <br>
+
+            Fibrotic:
+            {"✅" if feat_series["fitur_fibrotic"] else "❌"}
+
+            <br>
+
+            Efusi:
+            {"✅" if feat_series["fitur_efusi"] else "❌"}
+
+            <br>
+
+            Bilateral:
+            {"✅" if feat_series["fitur_bilateral"] else "❌"}
+
+        </div>
+        """, unsafe_allow_html=True)
 
     except Exception as e:
         st.error(f"❌ Error: {e}")
