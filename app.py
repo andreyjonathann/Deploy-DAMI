@@ -91,6 +91,53 @@ html, body, [class*="css"] {
 MODEL_DIR = "model"
 GDRIVE_FOLDER_ID = "1QJVa0RN6E_lDaBqWrOaBfzFGJoE2mwf6"
 
+def build_encoder():
+    model = tf.keras.Sequential([
+        tf.keras.layers.Input(shape=(128, 128, 1)),
+
+        tf.keras.layers.Conv2D(
+            32, (3, 3),
+            activation="relu",
+            padding="same"
+        ),
+        tf.keras.layers.BatchNormalization(),
+        tf.keras.layers.MaxPooling2D(
+            (2, 2),
+            padding="same"
+        ),
+
+        tf.keras.layers.Conv2D(
+            64, (3, 3),
+            activation="relu",
+            padding="same"
+        ),
+        tf.keras.layers.BatchNormalization(),
+        tf.keras.layers.MaxPooling2D(
+            (2, 2),
+            padding="same"
+        ),
+
+        tf.keras.layers.Conv2D(
+            128, (3, 3),
+            activation="relu",
+            padding="same"
+        ),
+        tf.keras.layers.BatchNormalization(),
+        tf.keras.layers.MaxPooling2D(
+            (2, 2),
+            padding="same"
+        ),
+
+        tf.keras.layers.Flatten(),
+
+        tf.keras.layers.Dense(
+            128,
+            activation="linear",
+            name="latent_vector"
+        )
+    ])
+
+    return model
 # ─────────────────────────────────────────────────────────────
 # DOWNLOAD + LOAD MODEL
 # ─────────────────────────────────────────────────────────────
@@ -127,10 +174,10 @@ def download_and_load_models():
 
     try:
         # ===== LOAD MODEL KERAS =====
-        from tensorflow.keras.models import load_model 
-        encoder = load_model(
-            os.path.join(actual_dir, "model_encoder.h5"),
-            compile=False
+        encoder = build_encoder()
+        
+        encoder.load_weights(
+        os.path.join(actual_dir, "model_encoder.h5")
         )
 
         # ===== LOAD PKL =====
