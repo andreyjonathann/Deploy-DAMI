@@ -128,9 +128,8 @@ def download_and_load_models():
     try:
         # ===== LOAD MODEL KERAS =====
         encoder = tf.keras.models.load_model(
-            os.path.join(actual_dir, "encoder_xray.keras"),
-            compile=False,
-            safe_mode=False
+            os.path.join(actual_dir, "model_encoder.h5"),
+            compile=False
         )
 
         # ===== LOAD PKL =====
