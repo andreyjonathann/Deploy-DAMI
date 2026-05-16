@@ -722,6 +722,11 @@ if st.button("🔍 Analisis Cluster"):
 
         </div>
         """, unsafe_allow_html=True)
+        except Exception as e:
+        st.markdown(
+            f'<div style="background:#2d1b1b;border:1px solid #ff4444;border-radius:8px;padding:1rem;color:#ff8080;">❌ Error saat prediksi: {e}</div>',
+            unsafe_allow_html=True
+        )
 # ─────────────────────────────────────────────────────────────
 # FOOTER
 # ─────────────────────────────────────────────────────────────
