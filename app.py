@@ -557,52 +557,73 @@ if st.button("🔍 Analisis Cluster"):
         # ==================================================
         # OUTPUT
         # ==================================================
-        st.markdown(f"""
-        <div class="result-card">
-            <h3>🫁 Hasil Analisis</h3>
+       # ==================================================
+# OUTPUT
+# ==================================================
+st.markdown(
+    f"""
+    <div class="result-card">
 
-            <div class="cluster-badge">
-                Cluster {cluster_pred}
-            </div>
+        <h3>🫁 Hasil Analisis</h3>
 
-            <br><br>
+        <div class="cluster-badge">
+            Cluster {cluster_pred}
+        </div>
 
-            <b>Kategori Report:</b>
+        <br>
+
+        <p>
+            <b>Kategori Report:</b><br>
             {category_text}
+        </p>
 
-            <br><br>
-
+        <p>
             <b>Interpretasi Penyakit:</b><br>
             {interpretasi}
+        </p>
 
-            <br><br>
+        <p>
+            <b>Fitur Terdeteksi:</b>
+        </p>
 
-            <b>Fitur Terdeteksi:</b><br>
-            Pneumonia:
-            {"✅" if feat_series["fitur_pneumonia"] else "❌"}
+        <ul style="line-height:1.9; padding-left:20px;">
+            <li>
+                Pneumonia:
+                {"✅" if feat_series["fitur_pneumonia"] else "❌"}
+            </li>
 
-            <br>
+            <li>
+                Bronchopneumonia:
+                {"✅" if feat_series["fitur_bronchopneumonia"] else "❌"}
+            </li>
 
-            Bronchopneumonia:
-            {"✅" if feat_series["fitur_bronchopneumonia"] else "❌"}
+            <li>
+                Fibrotic:
+                {"✅" if feat_series["fitur_fibrotic"] else "❌"}
+            </li>
 
-            <br>
+            <li>
+                Efusi:
+                {"✅" if feat_series["fitur_efusi"] else "❌"}
+            </li>
 
-            Fibrotic:
-            {"✅" if feat_series["fitur_fibrotic"] else "❌"}
+            <li>
+                Bilateral:
+                {"✅" if feat_series["fitur_bilateral"] else "❌"}
+            </li>
 
-            <br>
+            <li>
+                Pelebaran:
+                {"✅" if feat_series["fitur_pelebaran"] else "❌"}
+            </li>
 
-            Efusi:
-            {"✅" if feat_series["fitur_efusi"] else "❌"}
+            <li>
+                Normal:
+                {"✅" if feat_series["fitur_normal"] else "❌"}
+            </li>
+        </ul>
 
-            <br>
-
-            Bilateral:
-            {"✅" if feat_series["fitur_bilateral"] else "❌"}
-
-        </div>
-        """, unsafe_allow_html=True)
-
-    except Exception as e:
-        st.error(f"❌ Error: {e}")
+    </div>
+    """,
+    unsafe_allow_html=True
+)
