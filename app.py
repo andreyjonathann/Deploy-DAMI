@@ -661,62 +661,67 @@ if st.button("🔍 Analisis Cluster"):
             "Interpretasi belum tersedia"
         )
 
-        # ==================================================
+      # ==================================================
         # OUTPUT — hanya bagian ini yang diubah
         # ==================================================
         feature_items = ""
         for col in CLINICAL_COLS:
             is_active = feat_series[col] == 1
-            cls       = "active" if is_active else ""
-            label     = CLINICAL_LABELS[col]
-            icon      = "✓" if is_active else "✗"
+            if is_active:
+                item_style = "background:#00d4ff12;border:1px solid #00d4ff44;color:#e2e8f0;"
+                dot_style  = "background:#00d4ff;"
+                icon       = "✓"
+            else:
+                item_style = "background:#1e2536;border:1px solid #2d3650;color:#94a3b8;"
+                dot_style  = "background:#2d3650;"
+                icon       = "✗"
+            label = CLINICAL_LABELS[col]
             feature_items += f"""
-            <div class="feature-item {cls}">
-                <div class="feature-dot {cls}"></div>
+            <div style="display:flex;align-items:center;gap:0.5rem;{item_style}border-radius:8px;padding:0.4rem 0.7rem;font-size:0.85rem;">
+                <div style="width:8px;height:8px;border-radius:50%;flex-shrink:0;{dot_style}"></div>
                 {icon} {label}
             </div>"""
 
         st.markdown(f"""
-        <div class="result-card">
-            <h3>Hasil Analisis</h3>
+        <div style="background:linear-gradient(135deg,#1a1f2e,#141824);border:1px solid #2a3044;border-left:4px solid #00d4ff;border-radius:12px;padding:1.5rem 2rem;margin-top:1.5rem;">
 
-            <div class="cluster-badge">Cluster {cluster_pred}</div>
+            <p style="color:#00d4ff;font-size:0.9rem;text-transform:uppercase;letter-spacing:2px;margin-bottom:1rem;">Hasil Analisis</p>
 
-            <p class="interp-text">{interpretasi}</p>
+            <div style="display:inline-block;background:#00d4ff22;color:#00d4ff;border:1px solid #00d4ff55;border-radius:8px;padding:0.3rem 0.9rem;font-size:1.5rem;font-weight:700;margin-bottom:0.8rem;">
+                Cluster {cluster_pred}
+            </div>
 
-            <div class="section-label">Kategori Report Terdeteksi</div>
-            <div class="category-value">{category_text}</div>
+            <p style="color:#e2e8f0;font-size:1.05rem;font-weight:500;margin:0.4rem 0 1rem 0;">{interpretasi}</p>
 
-            <div class="section-label">Fitur Klinis</div>
-            <div class="feature-grid">{feature_items}</div>
+            <p style="color:#64748b;font-size:0.78rem;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.4rem;">Kategori Report Terdeteksi</p>
+            <p style="color:#e2e8f0;font-size:1rem;margin-bottom:1rem;">{category_text}</p>
 
-            <div class="info-row">
-                <div class="info-item">
-                    <label>Silhouette Score</label>
-                    <span>{config["best_score"]:.4f}</span>
+            <p style="color:#64748b;font-size:0.78rem;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.4rem;">Fitur Klinis</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-bottom:1rem;">
+                {feature_items}
+            </div>
+
+            <div style="display:flex;justify-content:space-between;border-top:1px solid #2a3044;padding-top:1rem;flex-wrap:wrap;gap:0.5rem;">
+                <div>
+                    <div style="font-size:0.7rem;color:#64748b;text-transform:uppercase;letter-spacing:1px;">Silhouette Score</div>
+                    <div style="color:#e2e8f0;font-family:monospace;font-size:0.85rem;">{config["best_score"]:.4f}</div>
                 </div>
-                <div class="info-item">
-                    <label>Image Weight</label>
-                    <span>{iw}</span>
+                <div>
+                    <div style="font-size:0.7rem;color:#64748b;text-transform:uppercase;letter-spacing:1px;">Image Weight</div>
+                    <div style="color:#e2e8f0;font-family:monospace;font-size:0.85rem;">{iw}</div>
                 </div>
-                <div class="info-item">
-                    <label>K Optimal</label>
-                    <span>{best_config['k']}</span>
+                <div>
+                    <div style="font-size:0.7rem;color:#64748b;text-transform:uppercase;letter-spacing:1px;">K Optimal</div>
+                    <div style="color:#e2e8f0;font-family:monospace;font-size:0.85rem;">{best_config['k']}</div>
                 </div>
-                <div class="info-item">
-                    <label>Dimensi Vektor</label>
-                    <span>{best_config['dimensi_vector']}</span>
+                <div>
+                    <div style="font-size:0.7rem;color:#64748b;text-transform:uppercase;letter-spacing:1px;">Dimensi Vektor</div>
+                    <div style="color:#e2e8f0;font-family:monospace;font-size:0.85rem;">{best_config['dimensi_vector']}</div>
                 </div>
             </div>
+
         </div>
         """, unsafe_allow_html=True)
-
-    except Exception as e:
-        st.markdown(
-            f'<div class="error-box">❌ Error saat prediksi: {e}</div>',
-            unsafe_allow_html=True
-        )
-
 # ─────────────────────────────────────────────────────────────
 # FOOTER
 # ─────────────────────────────────────────────────────────────
