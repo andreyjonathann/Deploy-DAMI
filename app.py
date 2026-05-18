@@ -33,14 +33,15 @@ html, body, [class*="css"] {
 }
 
 .block-container {
-    padding-top: 2rem;
+    padding-top: 2opx;
     max-width: 800px;
 }
 
 .header-title {
     font-family: 'Space Mono', monospace;
     font-size: 2rem;
-    font-weight: 700;
+    font-weight: bold;
+    word-wrap: break-word;
     color: #00d4ff;
 }
 
