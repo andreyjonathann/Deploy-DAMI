@@ -505,7 +505,12 @@ if result is None:
 
 IMG_SIZE = config["img_size"]
 
-st.success("✅ Model berhasil dimuat!")
+import time
+
+placeholder = st.empty()
+placeholder.success("Model berhasil dimuat!")
+time.sleep(2)
+placeholder.empty()
 
 # ─────────────────────────────────────────────────────────────
 # INPUT
