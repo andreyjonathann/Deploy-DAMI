@@ -468,7 +468,7 @@ st.markdown(
 )
 
 st.markdown(
-    '<p class="header-sub">Sistem Klasifikasi Multimodal</p>',
+    '<p class="header-sub">Sistem Clustering Multimodal</p>',
     unsafe_allow_html=True
 )
 
